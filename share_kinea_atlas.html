@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kinea Atlas — Análise</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/3.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
+
 <style>
 :root{
   --bg:#F8FAFC;--surface:#FFFFFF;--border:#E2E8F0;
@@ -255,9 +255,30 @@ document.addEventListener('DOMContentLoaded',()=>{
     b.onclick=()=>setRollWin(w);
     rg.appendChild(b);
   });
-
-  renderCards();renderChart();renderRetTable();renderMonthly();renderFundInfo();
 });
+
+// Load date adapter dynamically (same pattern as PORTFOLIO dashboard)
+(function(){
+  const s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js';
+  s.onload=function(){
+    renderCards();
+    renderChart();
+    renderRetTable();
+    renderMonthly();
+    renderFundInfo();
+  };
+  s.onerror=function(){
+    // Fallback: render without chart if adapter fails
+    renderCards();
+    renderRetTable();
+    renderMonthly();
+    renderFundInfo();
+    document.querySelector('.chart-container').innerHTML=
+      '<div style="padding:40px;text-align:center;color:#94A3B8;font-size:13px">Gráfico indisponível — verifique conexão com a internet.</div>';
+  };
+  document.head.appendChild(s);
+})();
 
 function setPeriod(p){
   activePeriod=p;
